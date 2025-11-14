@@ -1,10 +1,12 @@
 import questions from "../../../../questions.js";
-import {useEffect, useReducer, useState} from "react";
+import {useContext, useEffect, useReducer, useState} from "react";
 import '../index.css'
+import {QuizContext} from "../store/quiz-context.jsx";
 
 
 export default function Quiz() {
     const [currentQuestion, setCurrentQuestion] = useState(0);
+    const {isStartedQuiz, finishQuiz} = useContext(QuizContext);
 
     useEffect(() => {
         if (questions.length === 0) return;
@@ -15,28 +17,31 @@ export default function Quiz() {
         const id = setInterval(() => {
 
             if (idx >= questions.length) {
+                finishQuiz()
+                setCurrentQuestion(0)
                 clearInterval(id);
                 return;
             }
 
             setCurrentQuestion(questions[idx]);
             idx++;
-        }, 5000);
+        }, 1000);
+
 
         return () => clearInterval(id);
+
     }, []);
-
-
-    return (
-        <div id="quiz">
-            <progress max="100" value="70"></progress>
-            <h2 id="question">{questions[0].text}</h2>
-            <div id="answers">
-                {questions[0].answers.map((item, index) => (
-                    <button className="answer" key={index}>{item}</button>
-                ))}
-            </div>
-
+    const content =  <div id="quiz">
+        <progress max="100" value="70"></progress>
+        <h2 id="question">{currentQuestion.text}</h2>
+        <div id="answers">
+            {currentQuestion && currentQuestion.answers.map((item, index) => (
+                <button className="answer" key={index}>{item}</button>
+            ))}
         </div>
-    )
+    </div>
+
+
+    return (  currentQuestion !== 0 && content )
+
 }
