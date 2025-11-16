@@ -1,11 +1,12 @@
-import questions from "../../../../questions.js";
-import {useContext, useEffect, useReducer, useState} from "react";
+import questions from '../../../questions.js'
+import {useContext, useEffect, useState, useRef} from "react";
 import '../index.css'
 import {QuizContext} from "../store/quiz-context.jsx";
 
 
 export default function Quiz() {
     const [currentQuestion, setCurrentQuestion] = useState(0);
+    const [summaryStats, setSummaryStats] = useState([...questions])
     const {isStartedQuiz, finishQuiz} = useContext(QuizContext);
 
     useEffect(() => {
@@ -25,23 +26,59 @@ export default function Quiz() {
 
             setCurrentQuestion(questions[idx]);
             idx++;
-        }, 1000);
+        }, 5000);
 
 
         return () => clearInterval(id);
 
     }, []);
-    const content =  <div id="quiz">
+
+    function updateSummaryStats(currentQuestion, item) {
+
+        //
+        // setSummaryStats(prevSummaryStats => ({
+        //         ...prevSummaryStats,
+        //         [currentQuestion.id]: {
+        //             text: currentQuestion.text,
+        //             answer: item,
+        //         }
+        //     }))
+
+        // setSummaryStats(prevSummaryStats => ({
+        //         ...prevSummaryStats,
+        //         [currentQuestion.id]: {
+        //           ...prevSummaryStats,
+        //             answer: item,
+        //     }})
+        // )
+        setSummaryStats(prevSummaryStats =>
+            prevSummaryStats.map(i =>
+                i.id === currentQuestion.id
+                    ? { ...i, answer: item }
+                    : i
+            )
+        );
+
+        item === currentQuestion.correct_answer ? event.target.classList.add('correct') : event.target.classList.add('wrong')
+
+    }
+
+    console.log(summaryStats)
+
+    const content = <div id="quiz">
         <progress max="100" value="70"></progress>
-        <h2 id="question">{currentQuestion.text}</h2>
-        <div id="answers">
-            {currentQuestion && currentQuestion.answers.map((item, index) => (
-                <button className="answer" key={index}>{item}</button>
-            ))}
+        <div id="question">
+            <h2>{currentQuestion.text}</h2>
+            <div id="answers">
+                {currentQuestion && currentQuestion.answers.map((item) => (
+                    <div key={item} className="answer">
+                        <button onClick={() => updateSummaryStats(currentQuestion, item)}>{item}</button>
+                    </div>
+                ))}
+            </div>
         </div>
     </div>
 
-
-    return (  currentQuestion !== 0 && content )
+    return (currentQuestion !== 0 && content)
 
 }

@@ -1,4 +1,5 @@
 import quizComplete from '../assets/quiz-complete.png'
+import StatsGroup from "./StatsGroup.jsx";
 
 export default function ResultModal() {
     return (
@@ -7,12 +8,12 @@ export default function ResultModal() {
                 <img src={quizComplete}/>
                 <h2>QUIZ COMPLETED!</h2>
                 <div id="summary-stats">
-                    <ol>
-                        <li><p className="number">10%</p></li>
-                        <li><h3 className="text">skipped</h3></li>
-                    </ol>
-                    <p className="number">60%</p>
-                    <p className="number">67%</p>
+
+                    <StatsGroup percents="60" text="skipped"/>
+                    <StatsGroup percents="59" text="answered correctly"/>
+                    <StatsGroup percents="45" text="answered incorrectly"/>
+
+
                 </div>
             </div>
 

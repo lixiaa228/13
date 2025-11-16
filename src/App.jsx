@@ -20,12 +20,11 @@ function App() {
 
     return (
         <div>
-            <Header/>
+            { !isFinishedQuiz && <Header/>}
             <QuizContext.Provider value={ { isStartedQuiz, isFinishedQuiz, startQuiz, finishQuiz } }>
                 <StartQuiz/>
                 { (isStartedQuiz && isFinishedQuiz) && <ResultModal /> }
             </QuizContext.Provider>
-
         </div>
     )
 }
